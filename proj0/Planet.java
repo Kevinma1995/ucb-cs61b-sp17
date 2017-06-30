@@ -29,8 +29,8 @@ public class Planet {
 	}
 
 	public double calcDistance(Planet p) {
-		double dx = Math.abs(xxPos - p.xxPos);
-		double dy = Math.abs(yyPos - p.yyPos);
+		double dx = xxPos - p.xxPos;
+		double dy = yyPos - p.yyPos;
 		return Math.pow(dx * dx + dy * dy, 1.0 / 2);
 	}
 
@@ -44,17 +44,39 @@ public class Planet {
 	}
 
 	public double calcForceExertedByX(Planet p) {
-		double dx = Math.abs(xxPos - p.xxPos);
+		double dx = p.xxPos - xxPos;
 		double r = calcDistance(p);
 		double f = calcForceExertedBy(p);
 		return f * dx / r;
 	}
 
 	public double calcForceExertedByY(Planet p) {
-		double dy = Math.abs(yyPos - p.yyPos);
+		double dy = p.yyPos - yyPos;
 		double r = calcDistance(p);
 		double f = calcForceExertedBy(p);
 		return f * dy / r;
+	}
+
+	public double calcNetForceExertedByX(Planet[] plants) {
+		double netForce = 0;
+		for (Planet p : plants) {
+			if (equals(p)) {
+				continue;
+			}
+			netForce += calcForceExertedByX(p);
+		}
+		return netForce;
+	}
+
+	public double calcNetForceExertedByY(Planet[] plants) {
+		double netForce = 0;
+		for (Planet p : plants) {
+			if (equals(p)) {
+				continue;
+			}
+			netForce += calcForceExertedByY(p);
+		}
+		return netForce;
 	}
 
 	public void update(double dt, double fX, double fY) {
@@ -68,5 +90,9 @@ public class Planet {
 
 	private double calcAcceleration(double f) {
 		return f / mass;
+	}
+
+	public void draw() {
+		StdDraw.picture(xxPos, yyPos, "images/" + imgFileName);
 	}
 }
